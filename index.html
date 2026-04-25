@@ -1,56 +1,140 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MYXRIN WEBSITE</title>
-    <link rel="stylesheet" href="in/styles/style.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Roboto:wght@400;500&display=swap">
+    <title>Kode Keamanan Terverifikasi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .pin-digit {
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            width: 45px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1f2937;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .warning-box {
+            background-color: #fef2f2;
+            border-left: 4px solid #ef4444;
+        }
+    </style>
 </head>
-<body>
-    <header>
-      <nav id="side-menu" class="side-menu">
-  <button id="close-menu" class="close-btn">×</button>
-  <ul>
-    <li><a href="#"></a>Home</a></li>
-    <li><a href="#"></a>Lincense</a></li>
-    <li><a href="#"></a>Security</a></li>
-    <li><a href="#"></a>Subscribe</a></li>
-    <li><a href="#"></a>Donate</a></li>
-  </ul>
-  <button id="toggle-dark" title="Toggle dark mode">🌓</button>
-</nav>
-      <button id="menu-hamburger" class= "hamburger-btn" title="menu">☰</button>
-        <h1 class="title">MYXTANDT</h1>
-        <p class="subtitle">Alat yang Mudah di Gunakan<br>Untuk Prisma3d</p>
-    </header>
-    <main>
-        <div class="fade-in">
-            <button class="select-btn" id="show-template"><span class="btn-icon">📄</span>Template</button>
-            <button class="select-btn" id="show-tutorial"><span class="btn-icon">🎓</span>Tutorial</button>
-            <button class="select-btn" id="open-feedback-modal"><span class="btn-icon">💬</span>Feedback</button>
-        </div>
-    </main>
-    <footer class="footer-fixed fade-in">
-        <div class="footer-socmed">
-            <a href="https://instagram.com/myxrin_" target="_blank" class="footer-socmed-link" title="Instagram"><img src="assets/ig.png" class="footer-icon"</a>
-            <a href="https://tiktok.com/@myxrin_" target="_blank" class="footer-socmed-link" title="TikTok"><img src="assets/tt.png" alt="Tiktok" class="footer-icon"</a>
-            <a href="https://youtube.com/@Myxrin" target="_blank" class="footer-socmed-link" title="YouTube"><img src="assets/yt.png" alt="YouTube" class="footer-icon">
-            </a>
-        </div>
-        <p>Developer Membutuhkan Banyak Saran dan Kritik<br>Silahkan Kirim Feedback Kepada Kami</p>
-    </footer>
+<body class="min-h-screen flex items-center justify-center p-4">
 
-    <div id="feedback-modal" class="modal">
-      <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <h3>Kirim Feedback</h3>
-        <input type="text" placeholder="Nama (opsional)">
-        <textarea placeholder="Pesan atau saran..."></textarea>
-        <button>Kirim</button>
-      </div>
+    <div class="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden relative">
+        <!-- Header -->
+        <div class="bg-indigo-600 p-6 text-center">
+            <div class="inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-full mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+            </div>
+            <h1 class="text-xl font-bold text-white">Kode PIN Keamanan</h1>
+            <p class="text-indigo-100 text-sm mt-1">Gunakan kode di bawah ini dengan bijak</p>
+        </div>
+
+        <div class="p-8 text-center">
+            <!-- PIN Display -->
+            <div id="pin-container" class="flex justify-center gap-2 mb-8">
+                <!-- PIN akan diisi oleh JavaScript saat halaman dimuat -->
+                <div class="pin-digit">-</div>
+                <div class="pin-digit">-</div>
+                <div class="pin-digit">-</div>
+                <div class="pin-digit">-</div>
+                <div class="pin-digit">-</div>
+                <div class="pin-digit">-</div>
+            </div>
+
+            <!-- Warning Section -->
+            <div class="warning-box p-4 mb-8 text-left">
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500 mt-0.5 mr-3 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                    <div>
+                        <p class="text-red-800 font-bold text-sm mb-1">PENTING!</p>
+                        <p class="text-red-700 text-xs leading-relaxed">
+                            Demi keamanan, jangan pernah bagikan <span class="font-bold underline">PIN</span> atau <span class="font-bold underline">link website ini</span> kepada siapa pun.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-3">
+                <button onclick="copyPin()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center gap-2 shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                    </svg>
+                    Salin PIN
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer Info -->
+        <div class="bg-gray-50 border-t border-gray-100 p-4 text-center">
+            <p class="text-xs text-gray-400 uppercase tracking-widest font-bold italic">Sistem Keamanan Mandiri</p>
+        </div>
     </div>
 
-    <script src="app.js"></script>
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full text-sm font-medium opacity-0 transition-opacity duration-300 pointer-events-none shadow-lg">
+        PIN berhasil disalin!
+    </div>
+
+    <script>
+        let currentPin = "";
+
+        // Fungsi untuk membuat PIN secara acak
+        function generatePin() {
+            const digits = "0123456789";
+            let pin = "";
+            const container = document.getElementById('pin-container');
+            container.innerHTML = '';
+
+            for (let i = 0; i < 6; i++) {
+                const randomDigit = digits[Math.floor(Math.random() * digits.length)];
+                pin += randomDigit;
+                
+                const div = document.createElement('div');
+                div.className = 'pin-digit';
+                div.textContent = randomDigit;
+                container.appendChild(div);
+            }
+            currentPin = pin;
+        }
+
+        // Fungsi untuk menyalin PIN ke clipboard
+        function copyPin() {
+            const tempInput = document.createElement('input');
+            tempInput.value = currentPin;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            // Tampilkan notifikasi toast
+            const toast = document.getElementById('toast');
+            toast.style.opacity = '1';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 2000);
+        }
+
+        // PIN dibuat secara otomatis saat halaman dimuat
+        window.onload = generatePin;
+    </script>
 </body>
-</html 
+</html>
