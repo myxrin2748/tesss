@@ -3,126 +3,595 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kode Keamanan Terverifikasi</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Kode Akses Pribadi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+        :root {
+            --cream:   #f5f0e8;
+            --cream2:  #ede7d9;
+            --parchment: #e8dfc8;
+            --gold:    #b8963e;
+            --gold2:   #d4af6a;
+            --gold3:   #f0d080;
+            --ink:     #1a160e;
+            --ink2:    #3d3626;
+            --muted:   #8a7d65;
+            --border:  rgba(184,150,62,0.25);
+            --border2: rgba(184,150,62,0.12);
+            --shadow:  rgba(26,22,14,0.18);
         }
-        .pin-digit {
-            background: #ffffff;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            width: 42px;
-            height: 58px;
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Crimson Pro', Georgia, serif;
+            background: var(--cream);
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #1e293b;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            padding: 32px 20px;
+            position: relative;
+            overflow: hidden;
         }
-        /* Custom Modal Style */
-        #custom-popup {
-            display: none;
+
+        /* Textured background */
+        body::before {
+            content: '';
             position: fixed;
             inset: 0;
-            z-index: 100;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(8px);
+            background-image:
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 60px,
+                    rgba(184,150,62,0.03) 60px,
+                    rgba(184,150,62,0.03) 61px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 60px,
+                    rgba(184,150,62,0.03) 60px,
+                    rgba(184,150,62,0.03) 61px
+                );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Corner ornaments */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--gold), var(--gold2), var(--gold), transparent);
+            z-index: 10;
+        }
+
+        .corner {
+            position: fixed;
+            width: 80px;
+            height: 80px;
+            opacity: 0.25;
+            z-index: 0;
+        }
+        .corner-tl { top: 16px; left: 16px; border-top: 1px solid var(--gold); border-left: 1px solid var(--gold); }
+        .corner-tr { top: 16px; right: 16px; border-top: 1px solid var(--gold); border-right: 1px solid var(--gold); }
+        .corner-bl { bottom: 16px; left: 16px; border-bottom: 1px solid var(--gold); border-left: 1px solid var(--gold); }
+        .corner-br { bottom: 16px; right: 16px; border-bottom: 1px solid var(--gold); border-right: 1px solid var(--gold); }
+
+        /* Card */
+        .card {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 440px;
+            background: #faf6ee;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            box-shadow:
+                0 2px 0 var(--gold2),
+                0 4px 32px var(--shadow),
+                0 1px 2px rgba(184,150,62,0.3);
+            animation: cardReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes cardReveal {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Gold divider line */
+        .gold-line {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold2), var(--gold), var(--gold2), transparent);
+            margin: 0;
+        }
+
+        /* Header */
+        .header {
+            padding: 40px 40px 32px;
+            text-align: center;
+        }
+
+        .seal {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .seal-ring {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 1.5px solid var(--gold);
+            display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            background: linear-gradient(135deg, rgba(184,150,62,0.1), rgba(240,208,128,0.15));
+            animation: sealSpin 20s linear infinite;
         }
-        .card-container {
-            transition: all 0.3s ease;
+
+        @keyframes sealSpin {
+            from { box-shadow: 0 0 0 4px rgba(184,150,62,0.05), 0 0 0 8px rgba(184,150,62,0.03); }
+            50%  { box-shadow: 0 0 0 4px rgba(184,150,62,0.12), 0 0 0 8px rgba(184,150,62,0.06); }
+            to   { box-shadow: 0 0 0 4px rgba(184,150,62,0.05), 0 0 0 8px rgba(184,150,62,0.03); }
+        }
+
+        .seal-ring svg {
+            width: 24px;
+            height: 24px;
+            color: var(--gold);
+        }
+
+        .header-kicker {
+            font-family: 'Crimson Pro', serif;
+            font-size: 0.7rem;
+            font-weight: 300;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.35;
+            letter-spacing: -0.01em;
+        }
+
+        .header-sub {
+            font-size: 0.9rem;
+            font-weight: 300;
+            font-style: italic;
+            color: var(--muted);
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        /* Body */
+        .body {
+            padding: 32px 40px 36px;
+        }
+
+        .pin-label {
+            font-family: 'Crimson Pro', serif;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pin-label::before,
+        .pin-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border));
+        }
+        .pin-label::after {
+            background: linear-gradient(90deg, var(--border), transparent);
+        }
+
+        /* PIN Digits */
+        .pin-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 28px;
+        }
+
+        .pin-digit {
+            flex: 1;
+            max-width: 56px;
+            height: 68px;
+            background: var(--cream);
+            border: 1px solid var(--border);
+            border-bottom: 2px solid var(--gold2);
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--ink);
+            position: relative;
+            opacity: 0;
+            transform: translateY(8px) scale(0.95);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .pin-digit.revealed {
+            animation: digitReveal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .pin-digit:hover {
+            border-bottom-color: var(--gold);
+            box-shadow: 0 4px 12px rgba(184,150,62,0.15);
+        }
+
+        @keyframes digitReveal {
+            0%   { opacity: 0; transform: translateY(12px) scale(0.9); }
+            60%  { opacity: 1; transform: translateY(-3px) scale(1.02); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Shimmer on digit after copy */
+        @keyframes goldShimmer {
+            0%   { background: var(--cream); }
+            40%  { background: linear-gradient(135deg, #fdf6e3, #f5e8b0); box-shadow: 0 0 16px rgba(212,175,106,0.4); }
+            100% { background: var(--cream); box-shadow: none; }
+        }
+        .pin-digit.shimmer { animation: goldShimmer 0.8s ease forwards; }
+
+        /* Copy Button */
+        .copy-btn {
+            width: 100%;
+            padding: 16px 24px;
+            background: var(--ink);
+            border: 1px solid rgba(184,150,62,0.3);
+            border-radius: 3px;
+            color: var(--gold2);
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.25s ease;
+            letter-spacing: 0.04em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .copy-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(240,208,128,0.08), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .copy-btn:hover {
+            background: #2a2318;
+            border-color: var(--gold);
+            color: var(--gold3);
+            box-shadow: 0 4px 20px rgba(184,150,62,0.2);
+        }
+        .copy-btn:hover::before { left: 100%; }
+        .copy-btn:active { transform: scale(0.98); }
+        .copy-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+        .copy-btn.success {
+            background: #1a2e1e;
+            border-color: rgba(52,211,153,0.4);
+            color: #6ee7b7;
+        }
+        .copy-btn.error {
+            background: #2e1a1a;
+            border-color: rgba(248,113,113,0.4);
+            color: #fca5a5;
+        }
+
+        .copy-btn svg { width: 17px; height: 17px; flex-shrink: 0; }
+
+        /* Notice */
+        .notice {
+            margin-top: 20px;
+            padding: 14px 18px;
+            border: 1px solid var(--border2);
+            border-left: 3px solid var(--gold2);
+            background: rgba(184,150,62,0.04);
+            border-radius: 2px;
+        }
+
+        .notice p {
+            font-size: 0.85rem;
+            font-weight: 300;
+            font-style: italic;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 18px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(184,150,62,0.04);
+        }
+
+        .footer-left {
+            font-size: 0.72rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.72rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .footer-right svg { width: 12px; height: 12px; }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(60px);
+            padding: 11px 22px;
+            border-radius: 2px;
+            font-family: 'Crimson Pro', serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 999;
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .toast.success {
+            background: #0f1f12;
+            border: 1px solid rgba(52,211,153,0.4);
+            color: #6ee7b7;
+        }
+        .toast.error {
+            background: #1f0f0f;
+            border: 1px solid rgba(248,113,113,0.4);
+            color: #fca5a5;
+        }
+        .toast svg { width: 15px; height: 15px; }
+
+        /* Loading reveal overlay */
+        .reveal-overlay {
+            position: absolute;
+            inset: 0;
+            background: #faf6ee;
+            z-index: 10;
+            animation: overlayOut 0.4s 0.3s ease forwards;
+            border-radius: 4px;
+            pointer-events: none;
+        }
+        @keyframes overlayOut {
+            to { opacity: 0; pointer-events: none; }
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-6">
+<body>
+    <!-- Corner ornaments -->
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
 
-    <div class="max-w-md w-full bg-white rounded-[2rem] shadow-2xl overflow-hidden card-container border border-slate-100">
-        <!-- Header Section -->
-        <div class="bg-indigo-600 p-8 text-center">
-            <div class="inline-flex items-center justify-center w-14 h-14 bg-white/20 rounded-2xl mb-4 backdrop-blur-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-            </div>
-            <h1 class="text-xl font-bold text-white leading-tight">Jangan bagikan link atau kode ini ke orang lain, simpan buat dirimu sendiri</h1>
-        </div>
+    <div class="card" role="main">
+        <div class="reveal-overlay" aria-hidden="true"></div>
 
-        <div class="p-10 text-center">
-            <!-- PIN & Copy Action -->
-            <div class="space-y-6">
-                <div class="flex items-center justify-center gap-3">
-                    <div id="pin-container" class="flex gap-2">
-                        <!-- PIN Statis: 250426 -->
-                        <div class="pin-digit">2</div>
-                        <div class="pin-digit">5</div>
-                        <div class="pin-digit">0</div>
-                        <div class="pin-digit">4</div>
-                        <div class="pin-digit">2</div>
-                        <div class="pin-digit">6</div>
-                    </div>
-                </div>
-
-                <button onclick="copyPin()" class="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-2xl transition duration-300 shadow-lg shadow-indigo-200 active:scale-95 w-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+        <!-- Header -->
+        <div class="header">
+            <div class="seal">
+                <div class="seal-ring">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
                     </svg>
-                    Salin Kode PIN
-                </button>
+                </div>
+            </div>
+            <div class="header-kicker">Akses Terverifikasi</div>
+            <h1>Kode Keamanan Pribadi</h1>
+            <p class="header-sub">Simpan untuk dirimu sendiri. Jangan bagikan kepada siapapun.</p>
+        </div>
+
+        <div class="gold-line"></div>
+
+        <!-- Body -->
+        <div class="body">
+            <div class="pin-label">Kode PIN</div>
+
+            <div class="pin-row" id="pin-row" role="text" aria-label="Kode PIN: 250426">
+                <div class="pin-digit" data-val="2">2</div>
+                <div class="pin-digit" data-val="5">5</div>
+                <div class="pin-digit" data-val="0">0</div>
+                <div class="pin-digit" data-val="4">4</div>
+                <div class="pin-digit" data-val="2">2</div>
+                <div class="pin-digit" data-val="6">6</div>
+            </div>
+
+            <button
+                class="copy-btn"
+                id="copy-btn"
+                onclick="copyPin()"
+                aria-label="Salin kode PIN ke clipboard"
+            >
+                <svg id="btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                </svg>
+                <span id="btn-text">Salin Kode PIN</span>
+            </button>
+
+            <div class="notice" role="note">
+                <p>Dengan menyalin kode ini, kamu menyetujui untuk tidak menyebarkannya. Hargai karya yang telah dibuat dengan sepenuh hati.</p>
             </div>
         </div>
 
-        <!-- Footer Section -->
-        <div class="bg-slate-50 border-t border-slate-100 p-8 text-center">
-            <p class="text-lg font-bold text-slate-700 uppercase tracking-tight">Tolong hargai kreator</p>
+        <div class="gold-line"></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <span class="footer-left">© 2025 · Kreator</span>
+            <span class="footer-right">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+                Terverifikasi
+            </span>
         </div>
     </div>
 
-    <!-- Pop Up Modal -->
-    <div id="custom-popup" onclick="closePopup()">
-        <div class="bg-white rounded-[2.5rem] p-8 max-w-sm w-full text-center shadow-2xl transform transition-all" onclick="event.stopPropagation()">
-            <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-            </div>
-            <h3 class="text-xl font-bold text-slate-800 mb-4">Berhasil Disalin!</h3>
-            <p class="text-slate-600 text-sm leading-relaxed mb-8">
-                Kamu telah menyumbang setidaknya 10 rupiah untuk kreator yang rela menghabiskan waktunya demi membuatnya, mohon jangan bagikan kode ini.
-            </p>
-            <button onclick="closePopup()" class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-black transition shadow-lg">
-                Tutup Kembali
-            </button>
-        </div>
+    <!-- Toasts -->
+    <div class="toast success" id="toast-success" role="status" aria-live="polite">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+        </svg>
+        PIN berhasil disalin
+    </div>
+    <div class="toast error" id="toast-error" role="alert" aria-live="assertive">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+        </svg>
+        Gagal menyalin — coba lagi
     </div>
 
     <script>
-        // PIN sudah dipatok permanen di HTML, fungsi ini hanya untuk variabel salin
-        const currentPin = "250426";
+    (function () {
+        'use strict';
 
-        function copyPin() {
-            // Menggunakan metode textarea untuk kompatibilitas luas
-            const el = document.createElement('textarea');
-            el.value = currentPin;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
+        const PIN = "250426";
+        let isCopying = false;
+        let toastTimer = null;
 
-            // Tampilkan popup
-            document.getElementById('custom-popup').style.display = 'flex';
+        // Staggered digit reveal on load
+        const digits = document.querySelectorAll('.pin-digit');
+        digits.forEach((d, i) => {
+            setTimeout(() => d.classList.add('revealed'), 500 + i * 100);
+        });
+
+        // Expose copyPin globally for onclick
+        window.copyPin = async function () {
+            if (isCopying) return;
+            isCopying = true;
+
+            const btn     = document.getElementById('copy-btn');
+            const btnText = document.getElementById('btn-text');
+            const btnIcon = document.getElementById('btn-icon');
+
+            btn.disabled = true;
+
+            let success = false;
+
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(PIN);
+                    success = true;
+                } else {
+                    const ta = document.createElement('textarea');
+                    ta.value = PIN;
+                    ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;pointer-events:none';
+                    document.body.appendChild(ta);
+                    ta.focus();
+                    ta.select();
+                    const ok = document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    if (!ok) throw new Error('execCommand failed');
+                    success = true;
+                }
+            } catch (e) {
+                success = false;
+            }
+
+            if (success) {
+                // Button state
+                btn.classList.add('success');
+                btnIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>';
+                btnText.textContent = '✓ Tersalin';
+
+                // Shimmer digits with stagger
+                digits.forEach((d, i) => {
+                    setTimeout(() => {
+                        d.classList.remove('shimmer');
+                        void d.offsetWidth; // reflow to restart animation
+                        d.classList.add('shimmer');
+                    }, i * 70);
+                });
+
+                showToast('success');
+            } else {
+                btn.classList.add('error');
+                btnIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>';
+                btnText.textContent = 'Gagal — Coba Lagi';
+                showToast('error');
+            }
+
+            // Reset
+            setTimeout(() => {
+                btn.classList.remove('success', 'error');
+                btnIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>';
+                btnText.textContent = 'Salin Kode PIN';
+                btn.disabled = false;
+                isCopying = false;
+            }, 2500);
+        };
+
+        function showToast(type) {
+            // Clear any existing timer
+            if (toastTimer) clearTimeout(toastTimer);
+
+            // Hide both first
+            ['success', 'error'].forEach(t => {
+                document.getElementById(`toast-${t}`).classList.remove('show');
+            });
+
+            const toast = document.getElementById(`toast-${type}`);
+            // Force reflow before showing
+            void toast.offsetWidth;
+            toast.classList.add('show');
+
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+                toastTimer = null;
+            }, 2800);
         }
-
-        function closePopup() {
-            document.getElementById('custom-popup').style.display = 'none';
-        }
+    })();
     </script>
 </body>
 </html>
